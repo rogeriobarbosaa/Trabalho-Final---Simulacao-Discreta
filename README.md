@@ -1,14 +1,10 @@
 # Relatório de Simulação Discreta — Operações Aeroportuárias (Prova II)
 
-**Universidade Federal do Pará (UFPA)** 
-
-**Instituto de Ciências Exatas e Naturais (ICEN)** — **Faculdade de Computação** 
-
-**Disciplina:** Simulação Discreta (EN05225) 
-
-**Professor:** Dr. Filipe de Oliveira Saraiva
-
-**Alunos:** Christian Amarildo, Daniel Naiff, David Galhego e Rogério Barbosa 
+**Universidade Federal do Pará (UFPA)**  
+**Instituto de Ciências Exatas e Naturais (ICEN)** — **Faculdade de Computação**  
+**Disciplina:** Simulação Discreta (EN05225)  
+**Professor:** Dr. Filipe de Oliveira Saraiva  
+**Alunos:** Christian Amarildo, Daniel Naiff, David Galhego e Rogério Barbosa  
 
 ---
 
@@ -72,13 +68,13 @@ Foram executadas três configurações de infraestrutura para comparar o tempo d
 
 ### Tabela Comparativa de Desempenho:
 
-| Categoria | Métrica / Parâmetro | Cenário 1 <br> *(Base)* | Cenário 2 <br> *(Recomendado)*  | Cenário 3 <br> *(Expansão)* | Redução <br> *(C2 vs C1)* |
+| Categoria | Métrica / Parâmetro | Cenário 1 <br> *(Base)* | Cenário 2 <br> *(Recomendado)* | Cenário 3 <br> *(Expansão)* | Redução <br> *(C2 vs C1)* |
 | :--- | :--- | :---: | :---: | :---: | :---: |
 | **Infraestrutura** | **Plataformas** | 5 | 5 | 7 | — |
 | | **Hangares** | 3 | 3 | 5 | — |
 | | **Pistas Pequeno Porte (P)** | 2 | 3 | 3 | +50% |
 | | **Pistas Grande Porte (G)** | 1 | 2 | 2 | +100% |
-| **Tempo Total** | **Tempo Final de Simulação** | **1.110,0 min** <br> *(18,5h)* | **580,0 min** <br> *(9,7h)* | **1.390,0 min** <br> *(23,2h)* | **-47,7%**  |
+| **Tempo Total** | **Tempo Final de Simulação** | **1.110,0 min** <br> *(18,5h)* | **580,0 min** <br> *(9,7h)* | **1.390,0 min** <br> *(23,2h)* | **-47,7%** |
 | **Filas Máximas** | **Fila Máxima (Pouso)** | 392,0 min | **31,0 min** | 145,0 min | **-92,1%** |
 | | **Fila Máxima (Desembarque)** | 565,0 min | **124,0 min** | 385,0 min | **-78,1%** |
 | | **Fila Máxima (Hangar)** | 245,0 min | **90,0 min** | 230,0 min | **-63,3%** |
@@ -94,7 +90,7 @@ O Cenário 1 apresenta retenção excessiva nas etapas operacionais:
 * **Gargalo Primário:** A presença de apenas **1 pista de grande porte (`pista_g=1`)** cria um funil de saída.
 * **Efeito Dominó (Cascata de Bloqueios):** Com o afunilamento de decolagem, as aeronaves retêm as plataformas de embarque. Isso impede que o hangar seja esvaziado, bloqueando as plataformas de desembarque e gerando a **fila crítica de 565 minutos**.
 
-### 2. O Otimização do Cenário 2
+### 2. A Otimização do Cenário 2
 Ao expandir a infraestrutura para **3 Pistas P e 2 Pistas G** (mantendo 5 plataformas e 3 hangares):
 * O tempo total da simulação caiu de **1.110 min para 580 min** (uma **redução de 47,7%**).
 * As filas de espera caíram drasticamente em todas as etapas (pouso diminuiu 92,1% e decolagem diminuiu 86,7%).
@@ -109,16 +105,16 @@ Ao aumentar plataformas para 7 e hangares para 5 no Cenário 3, o tempo total **
 ## 6. Análise Econômica e de Viabilidade das Soluções
 
 1. **Prejuízos do Cenário Base:**
-   * **OPEX Elevado:** Filas de pouso de 392 minutos geram gasto excessivo com Querosene de Aviação (QAV) em procedimentos de espera em voo.
+   * **Custos Operacionais Elevados:** Filas de pouso de 392 minutos geram gasto excessivo com Querosene de Aviação (QAV) em procedimentos de espera em voo.
    * **Multas e Penalidades:** Atrasos em solo superiores a 4 horas acarretam indenizações a passageiros e multas aplicadas pelos órgãos reguladores.
 
 2. **Viabilidade Econômica do Cenário 2 (RECOMENDADO):**
-   * **Alto Retorno sobre Investimento (ROI):** Reduz o tempo de operação quase pela metade (de 18,5h para 9,7h), dobrando a capacidade diária de atendimento do aeroporto.
-   * **Amortização Rápida:** O custo de ampliação das pistas é rapidamente coberto pela eliminação dos custos de atraso e aumento do fluxo de voos e tarifas aeroportuárias.
+   * **Alto Ganho de Eficiência e Produtividade:** Reduz o tempo de operação quase pela metade (de 18,5h para 9,7h), dobrando a capacidade diária de atendimento do aeroporto.
+   * **Amortização Rápida do Investimento:** O custo focado na ampliação das pistas é rapidamente compensado pela eliminação dos custos de atraso e pelo aumento na arrecadação de tarifas aeroportuárias.
 
 3. **Inviabilidade Econômica do Cenário 3:**
-   * Exige alto aporte financeiro (**CAPEX**) para construção de 2 novas plataformas e 2 hangares.
-   * **Desperdício de Capital:** O investimento resulta na degradação do desempenho geral (1.390 min), configurando destruição de valor econômico.
+   * Exige alto gasto com obras e infraestrutura para a construção de 2 novas plataformas e 2 novos hangares.
+   * **Desperdício de Recursos:** O alto investimento em obras resulta na piora do desempenho geral do aeroporto (1.390 min), gerando prejuízo e perda de eficiência.
 
 ---
 
