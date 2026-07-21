@@ -1,9 +1,9 @@
 # Relatório de Simulação Discreta — Operações Aeroportuárias (Prova II)
 
-**Universidade Federal do Pará (UFPA)**[cite: 5]  
-**Instituto de Ciências Exatas e Naturais (ICEN)** — **Faculdade de Computação**[cite: 5]  
-**Disciplina:** Simulação Discreta (EN05225)[cite: 5]  
-**Professor:** Dr. Filipe de Oliveira Saraiva[cite: 5] 
+**Universidade Federal do Pará (UFPA)** 
+**Instituto de Ciências Exatas e Naturais (ICEN)** — **Faculdade de Computação** 
+**Disciplina:** Simulação Discreta (EN05225) 
+**Professor:** Dr. Filipe de Oliveira Saraiva
 **Alunos:** Christian Amarildo, Daniel Naiff, David Galhego e Rogério Barbosa 
 
 ---
@@ -21,20 +21,20 @@
 
 ## 1. Apresentação do Problema e Objetivos
 
-O trabalho consiste na modelagem e simulação de eventos discretos para o planejamento de capacidade e análise de gargalos de um aeroporto comercial[cite: 5].
+O trabalho consiste na modelagem e simulação de eventos discretos para o planejamento de capacidade e análise de gargalos de um aeroporto comercial.
 
-O aeroporto atende aeronaves de dois portes[cite: 5]:
-* **Pequeno Porte (P):** Opera em pistas pequenas (`pista_p`)[cite: 5].
-* **Grande Porte (G):** Opera em pistas grandes (`pista_g`)[cite: 5].
+O aeroporto atende aeronaves de dois portes:
+* **Pequeno Porte (P):** Opera em pistas pequenas (`pista_p`).
+* **Grande Porte (G):** Opera em pistas grandes (`pista_g`).
 
-### Fluxo Operacional das Aeronaves[cite: 5]:
-1. **Pouso:** Solicita a pista apropriada (`pista_p` ou `pista_g`) e a libera imediatamente após o pouso[cite: 5].
-2. **Desembarque:** Dirige-se a uma plataforma de desembarque disponível[cite: 5].
-3. **Hangar:** Após desembarcar, exige um hangar para manutenção/preparo[cite: 5]. A plataforma de desembarque só é liberada quando a aeronave ocupa o hangar[cite: 5].
-4. **Embarque:** Após o hangar, solicita uma plataforma disponível para embarque[cite: 5]. O hangar só é liberado quando a plataforma de embarque for alocada[cite: 5].
-5. **Decolagem:** Solicita a pista correspondente para decolar[cite: 5]. A plataforma de embarque só é liberada no momento do acesso à pista de decolagem[cite: 5].
+### Fluxo Operacional das Aeronaves:
+1. **Pouso:** Solicita a pista apropriada (`pista_p` ou `pista_g`) e a libera imediatamente após o pouso.
+2. **Desembarque:** Dirige-se a uma plataforma de desembarque disponível.
+3. **Hangar:** Após desembarcar, exige um hangar para manutenção/preparo. A plataforma de desembarque só é liberada quando a aeronave ocupa o hangar.
+4. **Embarque:** Após o hangar, solicita uma plataforma disponível para embarque. O hangar só é liberado quando a plataforma de embarque for alocada.
+5. **Decolagem:** Solicita a pista correspondente para decolar. A plataforma de embarque só é liberada no momento do acesso à pista de decolagem.
 
-### Tempos Operacionais Fixos (em minutos)[cite: 5]:
+### Tempos Operacionais Fixos (em minutos):
 | Operação | Pequeno Porte (P) | Grande Porte (G) |
 | :--- | :---: | :---: |
 | **Pouso** | 40 min | 60 min |
@@ -47,26 +47,26 @@ O aeroporto atende aeronaves de dois portes[cite: 5]:
 
 ## 2. Modelagem ACD (Activity Cycle Diagram)
 
-*(Seção reservada para anexar o diagrama ACD em imagem/pdf)*[cite: 5]
+*(Seção reservada para anexar o diagrama ACD em imagem/pdf)*
 
 ---
 
 ## 3. Implementação Computacional (SimPy / Python)
 
-A simulação foi implementada em **Python 3** utilizando a biblioteca **SimPy**[cite: 6].
+A simulação foi implementada em **Python 3** utilizando a biblioteca **SimPy**.
 
-### Arquitetura da Solução (`simulacao.py`)[cite: 6]:
-* **`Metricas`:** Registra tempos de espera em fila por etapa e horário de conclusão dos voos[cite: 6].
-* **`Aviao`:** Define o processo assíncrono da aeronave no SimPy (`operar()`)[cite: 6]. A retenção física de recursos é garantida via requisições manuais (`request()`) e liberações encadeadas (`release()`)[cite: 6].
-* **`simular()`:** Instancia os recursos (`pista_p`, `pista_g`, `plataforma`, `hangar`), realiza a leitura dos eventos de `chegadas.csv` e calcula o **Tempo Final de Simulação** ($TF$) e as **Filas Máximas**[cite: 5, 6].
+### Arquitetura da Solução (`simulacao.py`):
+* **`Metricas`:** Registra tempos de espera em fila por etapa e horário de conclusão dos voos.
+* **`Aviao`:** Define o processo assíncrono da aeronave no SimPy (`operar()`). A retenção física de recursos é garantida via requisições manuais (`request()`) e liberações encadeadas (`release()`).
+* **`simular()`:** Instancia os recursos (`pista_p`, `pista_g`, `plataforma`, `hangar`), realiza a leitura dos eventos de `chegadas.csv` e calcula o **Tempo Final de Simulação** ($TF$) e as **Filas Máximas**.
 
 ---
 
 ## 4. Análise dos Cenários e Resultados das Simulações
 
-Foram executadas três configurações de infraestrutura para comparar o tempo de processamento total e o acúmulo de filas[cite: 5].
+Foram executadas três configurações de infraestrutura para comparar o tempo de processamento total e o acúmulo de filas.
 
-### Tabela Comparativa de Desempenho[cite: 5]:
+### Tabela Comparativa de Desempenho:
 
 | Categoria | Métrica / Parâmetro | Cenário 1 <br> *(Base)* | Cenário 2 <br> *(Recomendado)*  | Cenário 3 <br> *(Expansão)* | Redução <br> *(C2 vs C1)* |
 | :--- | :--- | :---: | :---: | :---: | :---: |
@@ -85,20 +85,20 @@ Foram executadas três configurações de infraestrutura para comparar o tempo d
 
 ## 5. Identificação e Diagnóstico dos Gargalos
 
-### 1. Diagnóstico do Cenário Base (Cenário 1)[cite: 5]
-O Cenário 1 apresenta retenção excessiva nas etapas operacionais[cite: 5]:
-* **Gargalo Primário:** A presença de apenas **1 pista de grande porte (`pista_g=1`)** cria um funil de saída[cite: 5].
-* **Efeito Dominó (Cascata de Bloqueios):** Com o afunilamento de decolagem, as aeronaves retêm as plataformas de embarque[cite: 5]. Isso impede que o hangar seja esvaziado, bloqueando as plataformas de desembarque e gerando a **fila crítica de 565 minutos**.
+### 1. Diagnóstico do Cenário Base (Cenário 1)
+O Cenário 1 apresenta retenção excessiva nas etapas operacionais:
+* **Gargalo Primário:** A presença de apenas **1 pista de grande porte (`pista_g=1`)** cria um funil de saída.
+* **Efeito Dominó (Cascata de Bloqueios):** Com o afunilamento de decolagem, as aeronaves retêm as plataformas de embarque. Isso impede que o hangar seja esvaziado, bloqueando as plataformas de desembarque e gerando a **fila crítica de 565 minutos**.
 
-### 2. O Otimização do Cenário 2[cite: 5]
-Ao expandir a infraestrutura para **3 Pistas P e 2 Pistas G** (mantendo 5 plataformas e 3 hangares)[cite: 5]:
+### 2. O Otimização do Cenário 2
+Ao expandir a infraestrutura para **3 Pistas P e 2 Pistas G** (mantendo 5 plataformas e 3 hangares):
 * O tempo total da simulação caiu de **1.110 min para 580 min** (uma **redução de 47,7%**).
 * As filas de espera caíram drasticamente em todas as etapas (pouso diminuiu 92,1% e decolagem diminuiu 86,7%).
 * **Conclusão:** O aumento da vazão nas pistas eliminou o represamento das etapas internas de solo.
 
-### 3. Anomalia do Cenário 3 (Deseconomia de Escala)[cite: 5]
-Ao aumentar plataformas para 7 e hangares para 5 no Cenário 3, o tempo total **piorou para 1.390 minutos**[cite: 5].
-* **Causa:** O aumento da capacidade interna permitiu que mais aeronaves fossem processadas simultaneamente, acumulando múltiplos aviões ao mesmo tempo na fase de decolagem[cite: 5]. Sem pistas suficientes para dar vazão à demanda interna ampliada, formaram-se novos congestionamentos de saída.
+### 3. Anomalia do Cenário 3 (Deseconomia de Escala)
+Ao aumentar plataformas para 7 e hangares para 5 no Cenário 3, o tempo total **piorou para 1.390 minutos**.
+* **Causa:** O aumento da capacidade interna permitiu que mais aeronaves fossem processadas simultaneamente, acumulando múltiplos aviões ao mesmo tempo na fase de decolagem. Sem pistas suficientes para dar vazão à demanda interna ampliada, formaram-se novos congestionamentos de saída.
 
 ---
 
