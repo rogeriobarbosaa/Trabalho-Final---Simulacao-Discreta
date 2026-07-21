@@ -68,13 +68,13 @@ Foram executadas três configurações de infraestrutura para comparar o tempo d
 
 ### Tabela Comparativa de Desempenho[cite: 5]:
 
-| Categoria | Métrica / Parâmetro | Cenário 1 <br> *(Base)* | Cenário 2 <br> *(Recomendado)* 🏆 | Cenário 3 <br> *(Expansão)* | Redução <br> *(C2 vs C1)* |
+| Categoria | Métrica / Parâmetro | Cenário 1 <br> *(Base)* | Cenário 2 <br> *(Recomendado)*  | Cenário 3 <br> *(Expansão)* | Redução <br> *(C2 vs C1)* |
 | :--- | :--- | :---: | :---: | :---: | :---: |
 | **Infraestrutura** | **Plataformas** | 5 | 5 | 7 | — |
 | | **Hangares** | 3 | 3 | 5 | — |
 | | **Pistas Pequeno Porte (P)** | 2 | 3 | 3 | +50% |
 | | **Pistas Grande Porte (G)** | 1 | 2 | 2 | +100% |
-| **Tempo Total** | **Tempo Final de Simulação** | **1.110,0 min** <br> *(18,5h)* | **580,0 min** <br> *(9,7h)* | **1.390,0 min** <br> *(23,2h)* | **-47,7%** 📉 |
+| **Tempo Total** | **Tempo Final de Simulação** | **1.110,0 min** <br> *(18,5h)* | **580,0 min** <br> *(9,7h)* | **1.390,0 min** <br> *(23,2h)* | **-47,7%**  |
 | **Filas Máximas** | **Fila Máxima (Pouso)** | 392,0 min | **31,0 min** | 145,0 min | **-92,1%** |
 | | **Fila Máxima (Desembarque)** | 565,0 min | **124,0 min** | 385,0 min | **-78,1%** |
 | | **Fila Máxima (Hangar)** | 245,0 min | **90,0 min** | 230,0 min | **-63,3%** |
