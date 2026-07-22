@@ -54,12 +54,14 @@ class Aviao:
         self.rec["plataforma"].release(req_plat_desemb) 
         self.m.espera_hangar.append(self.env.now - t0)
         yield self.env.timeout(t["hangar"])
+        
+        # CORREÇÃO: Hangar é liberado AQUI, antes de pedir a plataforma de embarque
+        self.rec["hangar"].release(req_hangar)
 
         # 4. EMBARQUE
         req_plat_emb = self.rec["plataforma"].request()
         t0 = self.env.now
         yield req_plat_emb
-        self.rec["hangar"].release(req_hangar) 
         self.m.espera_plat_emb.append(self.env.now - t0)
         yield self.env.timeout(t["embarque"])
 
