@@ -47,7 +47,7 @@ O aeroporto atende aeronaves de dois portes:
 
 ## 2. Modelagem ACD (Activity Cycle Diagram)
 
-*(Seção reservada para anexar o diagrama ACD em imagem/pdf)*
+![Diagrama ACD do Cenário Aeroportuário](diagrama_acd.png)
 
 ---
 
