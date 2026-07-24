@@ -28,11 +28,12 @@ O aeroporto atende aeronaves de dois portes:
 * **Grande Porte (G):** Opera em pistas grandes (`pista_g`).
 
 ### Fluxo Operacional das Aeronaves:
-1. **Pouso:** Solicita a pista apropriada (`pista_p` ou `pista_g`) e a libera imediatamente após o pouso.
-2. **Desembarque:** Dirige-se a uma plataforma de desembarque disponível.
-3. **Hangar:** Após desembarcar, exige um hangar para manutenção/preparo. A plataforma de desembarque só é liberada quando a aeronave ocupa o hangar.
-4. **Embarque:** Após os preparativos, a aeronave libera o hangar e aguarda por uma plataforma disponível para embarque.
-5. **Decolagem:** Solicita a pista correspondente para decolar. A plataforma de embarque só é liberada no momento do acesso à pista de decolagem.
+Com base na premissa de liberação imediata, os recursos são desocupados assim que a respectiva atividade finaliza:
+1. **Pouso:** Solicita a pista apropriada e a libera imediatamente após a conclusão do pouso.
+2. **Desembarque:** Dirige-se a uma plataforma de desembarque disponível e a libera ao fim do processo.
+3. **Hangar:** A aeronave ocupa um hangar para manutenção/preparo, liberando-o ao fim desta etapa.
+4. **Embarque:** Aguarda por uma plataforma disponível para embarque de passageiros/cargas e a libera assim que concluído.
+5. **Decolagem:** Solicita a pista correspondente para decolar, liberando-a após o término do voo inicial.
 
 ### Tempos Operacionais Fixos (em minutos):
 | Operação | Pequeno Porte (P) | Grande Porte (G) |
@@ -49,6 +50,8 @@ O aeroporto atende aeronaves de dois portes:
 
 ![Diagrama ACD do Cenário Aeroportuário](diagrama_acd.png)
 
+*(O diagrama reflete a liberação imediata dos recursos entre as atividades, intercalando filas de espera independentes para cada fase operacional).*
+
 ---
 
 ## 3. Implementação Computacional (SimPy / Python)
@@ -57,7 +60,7 @@ A simulação foi implementada em **Python 3** utilizando a biblioteca **SimPy**
 
 ### Arquitetura da Solução (`simulacao.py`):
 * **`Metricas`:** Registra tempos de espera em fila por etapa e horário de conclusão dos voos.
-* **`Aviao`:** Define o processo assíncrono da aeronave no SimPy (`operar()`). A retenção física de recursos e a liberação de buffers intermediários (como a saída do hangar para aguardar o embarque) são garantidas via requisições manuais (`request()`) e liberações controladas (`release()`).
+* **`Aviao`:** Define o processo assíncrono da aeronave no SimPy (`operar()`). A aquisição e liberação dos recursos são gerenciadas de forma automatizada e segura utilizando Context Managers (`with recurso.request() as req:`). Isso garante que cada infraestrutura (pista, plataforma, hangar) seja imediatamente liberada após o seu tempo de serviço (`timeout`), evitando travamentos artificiais (deadlocks).
 * **`simular()`:** Instancia os recursos (`pista_p`, `pista_g`, `plataforma`, `hangar`), realiza a leitura dos eventos de `chegadas.csv` e calcula o **Tempo Final de Simulação** ($TF$) e as **Filas Máximas**.
 
 ---
@@ -68,52 +71,50 @@ Foram executadas três configurações de infraestrutura para comparar o tempo d
 
 ### Tabela Comparativa de Desempenho:
 
-| Categoria | Métrica / Parâmetro | Cenário 1 <br> *(Base)* | Cenário 2 <br> *(Intermediário)* | Cenário 3 <br> *(Recomendado)* | Redução <br> *(C3 vs C1)* |
+| Categoria | Métrica / Parâmetro | Cenário 1 <br> *(Base)* | Cenário 2 <br> *(Recomendado)* | Cenário 3 <br> *(Expansão Total)* | Redução <br> *(C2 vs C1)* |
 | :--- | :--- | :---: | :---: | :---: | :---: |
 | **Infraestrutura** | **Plataformas** | 5 | 5 | 7 | — |
 | | **Hangares** | 3 | 3 | 5 | — |
 | | **Pistas Pequeno Porte (P)** | 2 | 3 | 3 | +50% |
 | | **Pistas Grande Porte (G)** | 1 | 2 | 2 | +100% |
-| **Tempo Total** | **Tempo Final de Simulação** | **3.640,0 min** <br> *(~60,6h)* | **2.250,0 min** <br> *(~37,5h)* | **2.065,0 min** <br> *(~34,4h)* | **-43,2%** |
-| **Filas Máximas** | **Fila (Pouso)** | 572,0 min | 126,0 min | **179,0 min** | **-68,7%** |
-| | **Fila (Desembarque)** | 880,0 min | 335,0 min | **265,0 min** | **-69,8%** |
-| | **Fila (Hangar)** | 70,0 min | 50,0 min | **25,0 min** | **-64,2%** |
-| | **Fila (Embarque)** | 880,0 min | 350,0 min | **265,0 min** | **-69,8%** |
-| | **Fila (Decolagem)** | 510,0 min | 125,0 min | **190,0 min** | **-62,7%** |
+| **Tempo Total** | **Tempo Final de Simulação** | **3.270,0 min** <br> *(~54,5h)* | **2.060,0 min** <br> *(~34,3h)* | **2.060,0 min** <br> *(~34,3h)* | **-37,0%** |
+| **Filas Máximas** | **Fila (Pouso)** | 992,0 min | 324,0 min | 324,0 min | **-67,3%** |
+| | **Fila (Desembarque)** | 0,0 min | 5,0 min | 0,0 min | — |
+| | **Fila (Hangar)** | 10,0 min | 20,0 min | 0,0 min | — |
+| | **Fila (Embarque)** | 5,0 min | 10,0 min | 0,0 min | — |
+| | **Fila (Decolagem)** | 970,0 min | 330,0 min | 330,0 min | **-66,0%** |
 
 ---
 
 ## 5. Identificação e Diagnóstico dos Gargalos
 
+A correção na modelagem de liberação de recursos deixou claro que a infraestrutura de solo (plataformas e hangares) nunca foi o gargalo real do aeroporto.
+
 ### 1. Diagnóstico do Cenário Base (Cenário 1)
-O Cenário 1 apresenta um estrangulamento severo em sua capacidade de solo:
-* **Gargalo Primário (Plataformas):** As aeronaves recém-chegadas (desembarque) e as que saem do hangar (embarque) disputam simultaneamente o **mesmo recurso restrito** (5 plataformas). Isso gera picos colossais de **880 minutos** de fila para ambas as operações.
-* **Efeito Colateral no Espaço Aéreo:** Sem plataformas suficientes para escoar o desembarque, as aeronaves não conseguem sair da pista de pouso, gerando filas de espera em voo de 572 minutos, prolongando a simulação para insustentáveis 3.640 minutos (mais de 60 horas operacionais).
+O verdadeiro estrangulamento do sistema ocorre nas **Pistas**:
+* **Gargalo Crítico:** As aeronaves acumulam até **992 minutos** aguardando autorização para pouso e **970 minutos** esperando para decolar. As duas pistas pequenas e a única pista grande não dão conta da densidade de tráfego aéreo.
+* **Folga Interna:** Ao mesmo tempo, as filas internas (Desembarque, Hangar e Embarque) variam entre 0 e 10 minutos, provando que os 3 hangares e 5 plataformas atuais dão conta perfeitamente do fluxo *quando* os aviões conseguem pousar.
 
-### 2. Efeitos da Expansão Parcial (Cenário 2)
-Aumentar as pistas (3 Pequenas e 2 Grandes) quebra o gargalo de entrada e saída.
-* O tempo total da simulação cai de **3.640 min para 2.250 min**.
-* A fila de pouso reduz expressivamente para 126 minutos, mas o gargalo interno de plataformas ainda persiste com picos de 350 minutos (cerca de 6 horas de espera em solo).
+### 2. A Solução do Gargalo (Cenário 2)
+Adicionar 1 Pista P e 1 Pista G ataca o problema diretamente na raiz:
+* O tempo total da simulação despenca de **3.270 min para 2.060 min** (uma economia de 20 horas operacionais).
+* As filas extremas de pista são cortadas em aproximadamente 67%. Pequenas filas internas surgem (5 a 20 minutos) por conta da chegada mais volumosa de aviões ao pátio, mas são facilmente absorvidas sem impactar o tempo global.
 
-### 3. Solução Completa (Cenário 3)
-Ao escalar tanto a infraestrutura de pistas quanto a capacidade de solo (7 Plataformas e 5 Hangares):
-* O gargalo interno das plataformas é aliviado. As filas de embarque e desembarque caem para 265 minutos, o menor tempo entre todas as simulações.
-* O sistema opera de forma equilibrada, atingindo o melhor **Tempo Final (2.065 minutos)**, representando uma economia de 43,2% no tempo total em relação ao Cenário Base.
+### 3. A Ineficácia da Expansão Interna (Cenário 3)
+Aumentar as plataformas de 5 para 7 e os hangares de 3 para 5 **não gera benefício prático no tempo global**. O tempo final da simulação continuou estacionado nos exatos 2.060 minutos do Cenário 2, e as filas de pista permaneceram idênticas. A única mudança foi zerar as filas internas que já eram insignificantes.
 
 ---
 
 ## 6. Análise Econômica e de Viabilidade das Soluções
 
 1. **Prejuízos do Cenário Base (Inviável):**
-   * **Custos Operacionais Elevados:** Filas de pouso de 572 minutos geram gasto excessivo com Querosene de Aviação (QAV) em procedimentos de espera em voo.
-   * **Colapso Sistêmico:** Atrasos em solo próximos a 15 horas (880 min) impossibilitam a operação comercial, acarretando indenizações altíssimas a passageiros, multas pesadas das agências reguladoras (como ANAC) e perda de contratos com companhias aéreas.
+   * Manter aviões sobrevoando o aeroporto por mais de 16 horas (992 minutos de fila de pouso) resulta em queima insustentável de Querosene de Aviação (QAV), alto risco de segurança e colapso da malha aérea comercial.
 
-2. **Viabilidade do Cenário 2 (Medida Paliativa):**
-   * Reduz os custos de queima de combustível em voo, resolvendo o afunilamento de pistas. Contudo, os atrasos internos de passageiros em trânsito ainda geram custos substanciais com remarcações de voos e suporte em solo.
+2. **Viabilidade Econômica do Cenário 2 (RECOMENDADO):**
+   * **Maior Retorno sobre Investimento (ROI):** Todo o investimento inicial (CAPEX) é direcionado exclusivamente para a pavimentação de novas pistas. Essa obra única destrava a capacidade do aeroporto, reduzindo o tempo operacional do lote de voos em 37% e aumentando o faturamento em pousos e decolagens diárias.
 
-3. **Viabilidade Econômica do Cenário 3 (RECOMENDADO):**
-   * **Máxima Produtividade:** A expansão completa exige o maior investimento inicial (CAPEX) em obras civis, construção de novos pátios (plataformas) e áreas de manutenção (hangares).
-   * **Retorno sobre o Investimento (ROI):** É a única alternativa que viabiliza o fluxo fluido das aeronaves. O custo da obra é rapidamente amortizado pelo aumento drástico na capacidade diária de processamento de voos, elevação na arrecadação de tarifas aeroportuárias e eliminação das pesadas multas geradas no Cenário 1.
+3. **Inviabilidade do Cenário 3 (Superdimensionamento/Over-investment):**
+   * Do ponto de vista econômico, o Cenário 3 representa um erro de planejamento financeiro. A construção de 2 novas plataformas de embarque e 2 novos hangares exigiria dezenas de milhões em obras civis, desapropriações e manutenção, sem trazer **nenhuma** redução no tempo operacional das aeronaves em relação ao Cenário 2. O dinheiro seria gasto para zerar filas internas de apenas 5 a 20 minutos, caracterizando um desperdício de capital.
 
 ---
 
@@ -121,9 +122,10 @@ Ao escalar tanto a infraestrutura de pistas quanto a capacidade de solo (7 Plata
 
 ### Pré-requisitos
 * Python 3.8 ou superior
-* Gerenciador de pacotes moderno (`uv`) ou padrão (`pip`)
+* Gerenciador de dependências moderno (`uv`) ou padrão (`pip`)
+* Arquivo de dados `chegadas.csv` no mesmo diretório
 
-### Opção 1: Execução com o gerenciador `uv`
-Se estiver utilizando o `uv` em seu ambiente, basta rodar o comando (as dependências serão geridas automaticamente ou lidas do seu arquivo de projeto):
+### Execução via linha de comando (`uv`)
+Se o `uv` estiver configurado, basta rodar o comando abaixo para que as dependências (`simpy`) sejam geridas automaticamente e o script iniciado:
 ```bash
 uv run simulacao.py
