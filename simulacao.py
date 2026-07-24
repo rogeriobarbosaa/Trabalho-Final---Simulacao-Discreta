@@ -40,40 +40,39 @@ class Aviao:
             self.m.espera_pouso.append(self.env.now - t0)
             yield self.env.timeout(t["pouso"])
 
-        # 2. DESEMBARQUE (Requisita manualmente para segurar o recurso)
-        req_plat_desemb = self.rec["plataforma"].request()
-        t0 = self.env.now
-        yield req_plat_desemb
-        self.m.espera_plat_desemb.append(self.env.now - t0)
-        yield self.env.timeout(t["desembarque"])
+        # 2. DESEMBARQUE
+        # Usando 'with', a plataforma é liberada automaticamente ao fim do timeout
+        with self.rec["plataforma"].request() as req_plat_desemb:
+            t0 = self.env.now
+            yield req_plat_desemb
+            self.m.espera_plat_desemb.append(self.env.now - t0)
+            yield self.env.timeout(t["desembarque"])
 
         # 3. HANGAR
-        req_hangar = self.rec["hangar"].request()
-        t0 = self.env.now
-        yield req_hangar
-        self.rec["plataforma"].release(req_plat_desemb) 
-        self.m.espera_hangar.append(self.env.now - t0)
-        yield self.env.timeout(t["hangar"])
-        
-        # CORREÇÃO: Hangar é liberado AQUI, antes de pedir a plataforma de embarque
-        self.rec["hangar"].release(req_hangar)
+        # Hangar é liberado automaticamente ao fim do timeout
+        with self.rec["hangar"].request() as req_hangar:
+            t0 = self.env.now
+            yield req_hangar
+            self.m.espera_hangar.append(self.env.now - t0)
+            yield self.env.timeout(t["hangar"])
 
         # 4. EMBARQUE
-        req_plat_emb = self.rec["plataforma"].request()
-        t0 = self.env.now
-        yield req_plat_emb
-        self.m.espera_plat_emb.append(self.env.now - t0)
-        yield self.env.timeout(t["embarque"])
+        # Plataforma é liberada automaticamente ao fim do timeout
+        with self.rec["plataforma"].request() as req_plat_emb:
+            t0 = self.env.now
+            yield req_plat_emb
+            self.m.espera_plat_emb.append(self.env.now - t0)
+            yield self.env.timeout(t["embarque"])
 
         # 5. DECOLAGEM
         with pista.request() as req_decolagem:
             t0 = self.env.now
             yield req_decolagem
-            self.rec["plataforma"].release(req_plat_emb) 
             self.m.espera_decolagem.append(self.env.now - t0)
             yield self.env.timeout(t["decolagem"])
 
         self.m.termino.append(self.env.now)
+
 
 def simular(csv_path, plataformas, hangares, pistas_p, pistas_g):
     env = simpy.Environment()
@@ -94,16 +93,18 @@ def simular(csv_path, plataformas, hangares, pistas_p, pistas_g):
 
     env.run()
     
-    tf = max(m.termino)
+    # Tratamento para evitar erro caso a lista de término esteja vazia
+    tf = max(m.termino) if m.termino else 0
 
     print(f"\n--- Cenário: plat={plataformas} hangares={hangares} pista_p={pistas_p} pista_g={pistas_g} ---")
     print(f"Tempo final da simulação: {tf} minutos")
     
-    print(f"Fila Máxima (Pouso): {max(m.espera_pouso)} min")
-    print(f"Fila Máxima (Desembarque): {max(m.espera_plat_desemb)} min")
-    print(f"Fila Máxima (Hangar): {max(m.espera_hangar)} min")
-    print(f"Fila Máxima (Embarque): {max(m.espera_plat_emb)} min")
-    print(f"Fila Máxima (Decolagem): {max(m.espera_decolagem)} min")
+    # Adicionado tratamento para caso não haja filas de espera em algum dos cenários
+    print(f"Fila Máxima (Pouso): {max(m.espera_pouso) if m.espera_pouso else 0} min")
+    print(f"Fila Máxima (Desembarque): {max(m.espera_plat_desemb) if m.espera_plat_desemb else 0} min")
+    print(f"Fila Máxima (Hangar): {max(m.espera_hangar) if m.espera_hangar else 0} min")
+    print(f"Fila Máxima (Embarque): {max(m.espera_plat_emb) if m.espera_plat_emb else 0} min")
+    print(f"Fila Máxima (Decolagem): {max(m.espera_decolagem) if m.espera_decolagem else 0} min")
 
 if __name__ == "__main__":
     arquivo = 'chegadas.csv'
